@@ -1,0 +1,100 @@
+
+<table id="tableData" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+          <th>#</th>
+          <th>Autor</th>
+          <th>Titulo</th>
+          <th style="max-width: 50%; width: 50%;">Publicación</th>
+          <th>Fecha</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody id="show-data">
+
+ <!--   
+      <tr>
+        <td>1</td>
+        <td>Paulo Soto</td>
+        <td style="word-wrap: break-word;">Lorem ipsum dolor sit amet, nisl augue accommodare ad eam, ne novum vidisse regione sed, ad mea rebum antiopam. Quis facer forensibus nec ne, unum audire iracundia nec ei. Iriure nominati vituperatoribus est an, per te eligendi atomorum</td>
+        <td>05/May/2017 18:15</td>
+        <td><span class="label label-primary">Texto</span></td>
+        <td><span class="label label-success">Publicado</span></td>
+        <td style="text-align:center;">
+            <button type="button" class="btn btn-sm btn-default"><i class="fa fa-eye-slash"></i></button>
+            <button type="button" class="btn btn-sm btn-default edit_post"><i class="fa fa-edit"></i></button>
+            <button type="button" class="btn btn-sm btn-default btnBorrar" id="590bac5cf8278bd63c9a744b"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>
+
+      <tr>
+        <td>1</td>
+        <td>Paulo Soto</td>
+        <td><img class="img-responsive" src="http://img.goodhope.org.pe/gth/auxiliarLogistica.jpg" style="height: 200px;"></td>
+        <td>05/May/2017 18:15</td>
+        <td><span class="label label-warning">Imagen</span></td>
+        <td><span class="label label-danger">Oculto</span></td>
+        <td style="text-align:center;">
+            <button type="button" class="btn btn-sm btn-default"><i class="fa fa-eye"></i></button>
+            <button type="button" class="btn btn-sm btn-default edit_post"><i class="fa fa-edit"></i></button>
+            <button type="button" class="btn btn-sm btn-default"><i class="fa fa-trash"></i></button>
+        </td>
+      </tr>-->
+      
+    </tbody>
+</table>
+    
+<script>
+  $(document).ready(function(){
+
+    $.getJSON("publicacion",
+    function (json) {
+        var tr;
+        for (var i = 0; i < json.length; i++) {
+            tr = $('<tr>');
+            tr.append("<td>" + (i+1) + "</td>");
+            tr.append("<td> Anonimo </td>");
+            tr.append("<td>" + json[i].tv_titulo_post + "</td>");
+            tr.append("<td>" + json[i].tv_detalle_post + "</td>");
+            tr.append("<td>" + json[i].tv_fecha_post + "</td>");
+            tr.append('<td><span class="label label-primary">Texto</span></td>');
+            tr.append('<td><span class="label label-success">Publicado</span></td>');
+            tr.append('<td style="text-align:center;"><button type="button" class="btn btn-sm btn-default"><i class="fa fa-eye-slash"></i></button><button type="button" class="btn btn-sm btn-default edit_post" idPost="'+json[i]._id+'"><i class="fa fa-edit"></i></button><button type="button" class="btn btn-sm btn-default btnBorrar" idPost="'+json[i]._id+'"><i class="fa fa-trash"></i></button></td></tr>');
+            $('#show-data').append(tr);
+        }
+
+        var table = $("#tableData").DataTable();
+        
+    });
+
+  });
+
+  $(document).on('click', '.btnBorrar', function(){
+        
+        var id = $(this).attr("idPost");
+
+        $.ajax({
+          url: "delete/"+id,
+          type: 'DELETE',
+          seccess: function(data){
+            console.log(data);
+          }
+        });
+
+        $("#mainContent").load("reportes/posts.html");
+
+    });
+
+
+  $(document).on('click', '.edit_post', function(){
+        
+        var id = $(this).attr("idPost");
+
+        $("#mainContent").load("reportes/edit_post.html?id="+id); 
+
+    });
+
+</script>
+      

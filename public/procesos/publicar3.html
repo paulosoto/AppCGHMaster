@@ -1,0 +1,209 @@
+
+    <section class="content-header">
+      <h1>
+        Publicación de contenidos
+        <small>AppGoodHope</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
+        <li><a href="#">Procesos</a></li>
+        <li class="active">Publicar</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Contendio de la publicación</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form method="post" action="publicacion" id="formPost">
+              <div class="box-body" id="form-body">
+               
+                <div class="form-group">
+                  <label for="f_editor">Editor</label>
+                  <input type="text" class="form-control" id="f_editor" readonly="true">
+                </div>
+
+                <div class="form-group">
+                  <label for="f_editor">Título</label>
+                  <input type="text" class="form-control" id="f_titulo" name="tv_titulo_post" maxlength="100">
+                </div>
+
+                <div class="form-group">
+                  <label for="optionsRadios">Tipo de publicación</label>
+                    <div class="form-group">
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="optionsRadios" id="f_tipoPubTxt" class="radio_cl" checked>Texto
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="optionsRadios" id="f_tipoPubImg" class="radio_cl">Imagen
+                      </label>
+                    </div>
+                    <input type="hidden" name="tipo_pub" id="tipo_pub">
+                  </div>
+                </div>
+                
+                <div class="form-group" id="div_txt"> <label for="exampleInputFile">Texto</label> <textarea class="form-control" rows="9" placeholder="Max. 140 caracteres" id="f_postCont"  maxlength="600"></textarea> </div>
+
+                <div class="form-group" id="div_img">  <label for="exampleInputFile">Imagen</label> <input type="file" id="f_imgFile" onchange="readURL(this);"> </div>
+                
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="button" class="btn btn-primary" id="btnPublicar">Publicar</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+        <!-- /.col-->
+      </div>
+      <!-- ./row -->
+    </section>
+    <!-- /.content -->
+  
+<script>
+var flag_imagen = 0;
+
+  $(document).ready(function(){
+	   
+      $("#f_editor").val($("#s_usuario_nombre").val());
+      $("#div_img").hide();
+
+      $(".radio_cl").click(function(){
+
+          if( $(this).attr("id")=="f_tipoPubImg" ){
+            
+            if( $(this).attr('checked', 'checked') ){
+
+              $("#tipo_pub").val("Imagen");
+              flag_imagen=1;
+              $("#div_img").show();
+            }
+
+          }else{
+
+            if( $(this).attr('checked', 'checked') ){
+
+              $("#tipo_pub").val("Texto");
+              flag_imagen=0;
+              $("#div_img").hide();
+            }
+
+          }
+
+      });
+
+      $("#f_imgFile").on("click", function(){
+          $(this).val();
+          $(this).files();
+      });
+
+      $("#btnPublicar").click(function(){
+
+          var today = new Date();
+          var dd = addZero(today.getDate());
+          var mm = addZero(today.getMonth()+1); //January is 0!
+          var yyyy = today.getFullYear();
+          var hh = addZero(today.getHours());
+          var mi = addZero(today.getMinutes());
+
+          //alert(dd+"/"+mm+"/"+yyyy+" "+hh+":"+mi);
+          if(flag_imagen==1){ ///SI ES IMAGEN:
+            
+            var file = $('#f_imgFile').get(0).files[0];
+            var fd = new FormData();
+            fd.append('file', file);
+            fd.append("label", "app_");
+            
+            var fp = $('#f_imgFile');
+            var items = fp[0].files;
+            var fileName = items[0].name;
+
+
+            $.ajax({
+              url: "http://www.goodhope.org.pe/uploadAPK.php",
+              type: "POST",
+              data: fd,
+              processData: false,  // tell jQuery not to process the data
+              contentType: false   // tell jQuery not to set contentType
+            }).done(function( data ) {
+               //alert("El archivo "+data+" fue subido.");
+            });
+
+            $.post("publicacion",{ 
+                id_usuario: $("#s_id_usuario").val(),
+                img_url_usuario: $("#s_id_usuario_photo").val(),
+                tv_nombre_usuario: $("#s_usuario_nombre").val(),
+                tv_titulo_post: $("#f_titulo").val(),
+                tv_detalle_post: $("#f_postCont").val(),
+                tv_fecha_post: dd+"/"+mm+"/"+yyyy+" "+hh+":"+mi,
+                estado:1,
+                tipo:$("#tipo_pub").val(),
+                img_url: "http://www.goodhope.org.pe/uploadsApp/app_"+fileName
+              },function(data) {
+              //$( ".result" ).html( data );
+              alert("La publicacion ha sido correctamente posteada");
+              $("#mainContent").load("reportes/posts.html"); 
+
+            });
+
+          }else{
+
+            $.post("publicacion",{ 
+                id_usuario: $("#s_id_usuario").val(),
+                img_url_usuario: $("#s_id_usuario_photo").val(),
+                tv_nombre_usuario: $("#s_usuario_nombre").val(),
+                tv_titulo_post: $("#f_titulo").val(),
+                tv_detalle_post: $("#f_postCont").val(),
+                tv_fecha_post: dd+"/"+mm+"/"+yyyy+" "+hh+":"+mi,
+                estado:1,
+                tipo:$("#tipo_pub").val()
+              },function(data) {
+              alert("La publicacion ha sido correctamente posteada");
+              $("#mainContent").load("reportes/posts.html"); 
+
+            });
+
+          }
+
+
+      });
+	  
+  });
+
+  function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+  }
+
+  function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $("#div_imagen_previa").remove();
+                $("#form-body").append('<div class="form-group" id="div_imagen_previa"><img id="img_prev" src="#" alt="Vista Previa" /></div>')
+                $('#img_prev').attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+</script>
+</body>
+</html>

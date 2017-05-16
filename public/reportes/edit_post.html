@@ -1,0 +1,90 @@
+
+    <section class="content-header">
+      <h1>
+        Edición de contenidos
+        <small>AppGoodHope</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Inicio</a></li>
+        <li><a href="#">Reportes</a></li>
+        <li><a href="#">Post</a></li>
+        <li class="active">Editar</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-12">
+          
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Contendio de la publicación</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form id="postEdit">
+              <div class="box-body" id="form-body">
+               
+                <div class="form-group">
+                  <label for="f_editor">Título</label>
+                  <input type="text" class="form-control" id="f_titulo" name="f_titulo" maxlength="25">
+                </div>
+
+                <div class="form-group" id="div_txt">
+                  <label for="exampleInputFile">Texto</label>
+                  <textarea class="form-control" rows="9" id="f_texto" name="f_texto"></textarea>
+                </div>
+
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="button" class="btn btn-primary" id="btn_actualizar">Actualizar</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+        <!-- /.col-->
+      </div>
+      <!-- ./row -->
+    </section>
+    <!-- /.content -->
+  
+<script>
+  $(document).ready(function(){
+
+    $.getJSON("publicacion/590b9d5dcc6253d3e0c0e7af",
+        function (json) {
+            for (var i = 0; i < json.length; i++) {
+                $("#f_titulo").val(json[i].tv_titulo_post);
+                $("#f_texto").val(json[i].tv_detalle_post);
+            }
+    });
+	  
+  });
+
+
+  $(document).on('click', '#btn_actualizar', function(){
+        
+        var id = $(this).attr("idPost");
+
+        $.ajax({
+          url: "publicacion/590b9d5dcc6253d3e0c0e7af",
+          type: 'PUT',
+          dataType: 'json',
+          data: $('#postEdit').serialize(),
+          seccess: function(data){
+            console.log(data);
+          }
+        });
+
+        $("#mainContent").load("reportes/posts.html");
+
+    });
+
+</script>
+</body>
+</html>

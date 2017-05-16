@@ -1,0 +1,53 @@
+
+<table id="tableData" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombres(s)</th>
+          <th>Apellidos</th>
+          <th>DNI</th>
+          <th>Codigo Trab.</th>
+          <th>Email</th>
+          <th>Celular</th>
+          <th>Estado</th>
+          <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td>1</td>
+        <td>Paulo</td>
+        <td>Soto</td>
+        <td>47082455</td>
+        <td>1367</td>
+        <td>paulo.sotob@gmail.com</td>
+        <td>979354089</td>
+        <td><span class="label label-success">Activo</span></td>
+        <td style="text-align:center;">
+            <button type="button" class="rowTecnologo btn btn-sm btn-danger" id="idBan">Desactivar</button>
+        </td>
+      </tr>
+      
+    </tbody>
+</table>
+    
+<script>
+$(document).ready(function(){
+
+    var table = $("#tableData").DataTable();
+    
+     //DETALLE DE LOS DOCUMENTOS
+    $("#tableData tbody").on("click", '.rowTecnologo', function(e){
+         
+         var data = table.row( this ).data();
+         //alert( 'You clicked on '+data[0]+'\'s row' );
+         
+         var id_tecnologo = $(this).attr("id");
+         //$("#mainContent").load("detalleBolFact.jsp?f_id_proceso="+id_proceso); 
+    });
+
+    
+  });
+</script>
+      
